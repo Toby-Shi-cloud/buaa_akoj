@@ -59,7 +59,7 @@
                 <th class="one wide" style="text-align: center">状态</th>
                 <th>题目</th>
                 <% if (hasStatistics) { %>
-                  <th class="one wide center aligned">统计<br>通过数 / 得分数 / 提交数</th>
+                  <th class="one wide center aligned">统计</th>
                 <% } %>
               </tr>
             </thead>

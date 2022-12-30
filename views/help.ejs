@@ -4,24 +4,23 @@
     <h1 class="ui center aligned header">帮助</h1>
     <div style="font-content">
         <h2 class="ui header">评测</h2>
+        <font color="red">AKOJ目前仅开放C, C++, Java与Python3语言使用。</font>
         <p>
             C++ 使用 <code>clang++</code> 或 <code>g++</code> 编译，命令形如 &nbsp;<code>clang++/g++ source_file.cpp -o exec_file -O2 -lm -DONLINE_JUDGE -mx32 -std=c++03</code>（对于 C++ 11 和 C++ 17，替换命令中的 <code>-std=</code> 参数）；
             <br> C 使用 <code>clang</code> 编译，命令为 &nbsp;<code>clang source_file.c -o exec_file -O2 -lm -DONLINE_JUDGE -mx32</code>；
-            <br> Pascal 使用 <code>fpc</code> 编译，命令为 &nbsp;<code>fpc source_file.pas -O2</code>。
             <br> Java 编译时会自动检测您的代码中 <code>public class</code>，如果您的代码中没有 <code>public class</code>，请将入口类命名为 <code>Main</code>。
-            <br> C# 使用 Mono 平台的编译器与运行环境。
             <br>
         </p>
         <p>请根据题目中的说明选择使用<strong>标准输入输出</strong>或<strong>文件输入输出</strong>。</p>
 
         <h2 class="ui header">个人资料<br></h2>
         <p>本站不提供头像存储服务，而是使用 Gravatar 进行头像显示。请使用邮箱注册 <a href="https://zh-cn.wordpress.com/">WordPress.com</a>，登录 <a href="https://cn.gravatar.com/">Gravatar</a> 并上传头像。同样使用 Gravatar 的 OJ 有 Vijos、COGS、UOJ 等。</p>
-        <p>个性签名可以使用 Markdown 与 HTML，请不要在其中添加恶意代码。</p>
+        <p>个性签名可以使用 Markdown 与 HTML。爱护OJ就是我们大家，请设置积极向上内容的个性签名。</p>
         <h2 class="ui header">添加题目</h2>
         <h3 class="ui header">题面</h3>
         <p>在<a href="/problem/0/edit">添加题目页面</a>填写题面，题目内容使用 Markdown 与 TeX 公式。</p>
         <h3 class="ui header">测试数据</h3>
-<p>旧版的 <code>data_rule.txt</code> 已经停止使用，新加入的题目请使用新的 <code>data.yml</code> 配置文件。关于 YAML，详见 <a href="https://zh.wikipedia.org/wiki/YAML">YAML 的 Wikipedia 词条</a>。</p>
+<p>请使用新的 <code>data.yml</code> 配置文件。关于 YAML，详见 <a href="https://zh.wikipedia.org/wiki/YAML">YAML 的 Wikipedia 词条</a>。</p>
 <p>对于传统和提交答案题目，<code>data.yml</code> 是可选的，系统会自动识别您的数据包，将每个 <code>.in</code> 文件对应到 <code>.out</code> 或 <code>.ans</code> 文件，并将 <code>spj_</code> 开头的文件作为 Special Judge（详见下文的「Special Judge」）。</p>
 <h4>传统</h4>
 <p>对于传统题目，<code>data.yml</code> 的格式如下：</p>
@@ -86,3 +85,4 @@
     </div>
 </div>
 <% include footer %>
+

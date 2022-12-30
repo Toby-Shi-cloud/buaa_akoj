@@ -76,11 +76,11 @@
       </div>
     </div>
     <div class="right floated five wide column">
-        <h4 class="ui top attached block header"><i class="ui quote left icon"></i>一言（ヒトコト）</h4>
+        <h4 class="ui top attached block header"><i class="ui quote left icon"></i>一言</h4>
         <div class="ui bottom attached center aligned segment">
           <div class="ui active centered inline loader" id="hitokoto-loader"></div>
           <script>
-          $.get('https://v1.hitokoto.cn/?c=a', function (data) {
+          $.get('https://v1.hitokoto.cn/?c=d&c=i', function (data) {
             if (typeof data === 'string') data = JSON.parse(data);
             $('#hitokoto-loader').removeClass('active');
             $('#hitokoto-content').css('display', '').text(data.hitokoto);
@@ -226,6 +226,16 @@
   </div>
 </div>
 <script>
+function setOneColumn(){
+    var deviceAgent = navigator.userAgent.toLowerCase();
+    var agentID = deviceAgent.match(/(iphone|ipod|ipad|android)/);
+    if(agentID != null){
+        document.getElementsByClassName("ui three column grid")[0].className="ui";
+    } else {
+        document.getElementById('desktopmenu').style.display="block";
+    }
+}
+$(document).ready(setOneColumn());
 $(function () {
   $('.ui.search').search({
     debug: true,
@@ -241,3 +251,4 @@ $(function () {
 });
 </script>
 <% include footer %>
+

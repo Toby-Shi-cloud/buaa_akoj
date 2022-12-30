@@ -7,11 +7,18 @@
   color: #000;
 }
 </style>
+<% var csv = ""; %>
+
+
 <div class="padding">
 <h1 class="ui center aligned header" style="margin-bottom: 30px; "><%= contest.title %></h1>
+    <% if (curUser.is_admin) {%><a href="javascript:exportCSV()">导出成绩为CSV</a><% } %>
         <table class="ui very basic center aligned table">
             <thead>
             <tr>
+                <%
+                    csv += ("#,用户名,注册邮箱,");
+                %>
                 <th>#</th>
                 <th>用户名</th>
                 <% if (contest.type === 'acm') { %>
@@ -22,12 +29,13 @@
                 <th>
                   <a href="<%= syzoj.utils.makeUrl(['contest', contest.id, 'problem', i + 1]) %>">
                     <%= syzoj.utils.removeTitleTag(problems[i].title) %>
+                      <% csv += syzoj.utils.removeTitleTag(problems[i].title)+','; %>
                   </a>
                 </th>
                 <% } %>
                 <% if (contest.type === 'noi' || contest.type === 'ioi') { %>
                   <th>总分</th>
-                <% } %>
+                <% csv+= '总分\\r\\n'} %>
             </tr>
             </thead>
             <tbody>
@@ -79,9 +87,10 @@
                     <div>
                   <% } %>
                   <%= rank %>
+                  <% csv+=rank.toString()+','; %>
                   </div>
                 </td>
-                <td><a href="<%= syzoj.utils.makeUrl(['user', item.user.id]) %>"><%= item.user.username %></a><% if (item.user.nameplate) { %><%- item.user.nameplate %><% } %></td>
+                <td><% csv+=item.user.username+','+item.user.email+',' %><a href="<%= syzoj.utils.makeUrl(['user', item.user.id]) %>"><%= item.user.username %></a><% if (item.user.nameplate) { %><%- item.user.nameplate %><% } %></td>
                 <% if (contest.type === 'acm') { %>
                   <td>
                     <span class="score score_<%= parseInt((item.player.score / ranklist[0].player.score * 10) || 0) %>">
@@ -99,6 +108,7 @@
                     <td>
                   <% } %>
                   <% if (!item.player.score_details[problem.id]) { %>
+                        <% csv+='=0,';%>
                     </td>
                   <% } else if (contest.type === 'acm') { %>
                       <a href="<%= syzoj.utils.makeUrl(['submission', item.player.score_details[problem.id].judge_id]) %>">
@@ -126,6 +136,7 @@
                         <% if (item.player.score_details[problem.id].weighted_score != null) { %>
                           <span class="score score_<%= parseInt((item.player.score_details[problem.id].score / 10) || 0) %>">
                             <%= Math.round(item.player.score_details[problem.id].weighted_score) %>
+                            <% csv+=Math.round(item.player.score_details[problem.id].weighted_score).toString()+','; %>
                           </span>
                         <% } else { %>
                           <span class="status compile_error">
@@ -144,6 +155,7 @@
                   <td>
                     <span class="score score_<%= parseInt((item.player.score / ranklist[0].player.score * 10) || 0) %>">
                       <%= item.player.score %>
+                      <% csv+=Math.round(item.player.score).toString()+'\\r\\n'; %>
                     </span>
                     <div class="submit_time">
                       <%= syzoj.utils.formatTime(latest - contest.start_time) %>
@@ -165,4 +177,22 @@
 </div>
 <% } %>
 </div>
+
+<% if (curUser.is_admin) {%>
+<script type="text/javascript">
+  function exportCSV(){
+    var csvData = "<%- csv %>";
+    var blob = new Blob(['\uFEFF' + csvData], {
+      type: 'text/plain;charset=utf-8',
+    });
+    var downloadLink = document.createElement('a');
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = "export.csv";
+    downloadLink.click();
+
+  }
+</script>
+<% } %>
+
 <% include footer %>
+

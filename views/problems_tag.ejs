@@ -1,0 +1,29 @@
+<% this.title = 'Problem_Tag' %>
+<!-- Author:zyyyyyyyyyyy-->
+
+<% include header %>
+
+<div class="padding">
+    <h1 class="ui center aligned header">标签</h1>
+    <br>
+<% if (tags.length) { %>
+    <table class="ui very basic center aligned table">
+        <tbody>
+          <tr style="height: 44px; ">
+        <% for (let tag of tags) { %>
+                <% let url = syzoj.utils.makeUrl(['problems', 'tag', tag.id]); %>
+                <a href="<%= url %>" class="ui tiny <%= tag.color %> label" style="margin:3px!important;">
+                    <%= tag.name %>
+                </a>
+        <% } %>
+          </tr>
+        </tbody>
+    </table><br>
+<% } else { %>
+    <div class="ui placeholder segment">
+        <div class="ui icon header"><i class="list icon" style="margin-bottom: 20px; "></i>暂无标签</div>
+    </div>
+<% } %>
+</div>
+<% include footer %>
+

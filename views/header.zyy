@@ -5,11 +5,9 @@
     <meta charset="utf-8">
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width">
-    <title><%= title %> - AKOJ代码测试</title>
-<!--    <link href="<%- lib('semantic-ui/2.4.1/semantic.min.css') %>" rel="stylesheet"> -->
-	<link href="https://fomantic-ui.com/dist/semantic.min.css?v=2.9.0" rel="stylesheet">
-	<link href="<%- selfLib('tomorrow.css') %>" rel="stylesheet">
-	<link href="<%- selfLib('syntect-tomorrow.css') %>?20220512" rel="stylesheet">
+    <title><%= title %> - <%= syzoj.config.title %></title>
+    <link href="<%- lib('semantic-ui/2.4.1/semantic.min.css') %>" rel="stylesheet">
+    <link href="<%- selfLib('syntect-tomorrow.css') %>?20220512" rel="stylesheet">
     <link href="<%- selfLib('style.css') %>?20181212" rel="stylesheet">
     <link href="<%- lib('morris.js/0.5.1/morris.css') %>" rel="stylesheet">
     <% if (useLocalLibs || !syzoj.config.google_fonts || !['like-google-fonts', 'like-local', 'built-in'].includes(syzoj.config.google_fonts.type)) { %>
@@ -61,7 +59,7 @@
 </script>
 
 <body onload="setMenu()" style="position: relative; margin-top: 49px; height: calc(100% - 49px); overflow-y: overlay; ">
-    <div id="desktopmenu" class="ui fixed borderless inverted menu" style="position: fixed; height: 49px; display: none;">
+    <div id="desktopmenu" class="ui fixed borderless menu" style="position: fixed; height: 49px; display: none;">
         <div class="ui container">
             <%
             if (syzoj.config.logo.url) {
@@ -86,7 +84,7 @@
             <div class="right menu">
               <% if (user) { %>
               <a href="<%= syzoj.utils.makeUrl(['user', user.id]) %>" style="color: inherit; ">
-              <div class="ui simple dropdown inverted item">
+              <div class="ui simple dropdown item">
                 <%= user.username %><% if (user.nameplate) { %><%- user.nameplate %><% } %> <i class="dropdown icon"></i>
                 <div class="menu">
                   <a class="item" href="<%= syzoj.utils.makeUrl(['user', user.id, 'edit']) %>"><i class="edit icon"></i>修改资料</a>
@@ -153,7 +151,7 @@
       <% } %>
     <div class="right menu">
         <% if (user) { %>
-      <a href="<%= syzoj.utils.makeUrl(['user', user.id]) %>" style="color: white; ">
+      <a href="<%= syzoj.utils.makeUrl(['user', user.id]) %>" style="color: inherit; ">
         <div class="ui simple dropdown item">
             <%= user.username %><% if (user.nameplate) { %><%- user.nameplate %><% } %> <i class="dropdown icon"></i>
           <div class="menu">

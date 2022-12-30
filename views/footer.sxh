@@ -1,0 +1,15 @@
+</div>
+    <div class="ui vertical footer segment" style="margin-top: 15px; ">
+      <div class="ui center aligned container">        
+	<span style="color: #999;"><a href="https://beian.miit.gov.cn" target="_blank">京ICP备20220067号</a>  </span>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802039494" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="https://akoj-pic-1302932092.cos.ap-beijing.myqcloud.com/beian.png" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">京公网安备 1101080204号</p></a>
+	</br>
+	<span style="color: #999;"><%= syzoj.config.title %> Powered by <a href="https://github.com/syzoj/syzoj" target="_blank">SYZOJ</a>.</span>
+      </div>
+    </div>
+</div>
+<script data-cfasync="false" src="<%- lib('semantic-ui/2.4.1/semantic.min.js') %>"></script>
+<script src="<%- lib('Chart.js/2.7.3/Chart.bundle.min.js') %>"></script>
+<script src="<%- selfLib('script.js') %>?20170710"></script>
+</body>
+</html>

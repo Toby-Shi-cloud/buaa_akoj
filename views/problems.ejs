@@ -25,7 +25,9 @@ if (typeof tags !== 'undefined') tagIDs = tags.map(x => x.id);
           <form action="<%= syzoj.utils.makeUrl(['problems', 'search']) %>" method="get">
             <div class="ui search" style="width: 280px; height: 28px; margin-top: -5.3px; ">
               <div class="ui left icon input" style="width: 100%; ">
-                <input class="prompt" style="width: 100%; " type="text" value="<%= req.query.keyword %>" placeholder="ID / 题目名 …" name="keyword">
+                <button id="show_tag_button" class="ui icon button"><i class="tag icon"></i></button>
+                <script>$(function () {$('#show_tag_button').click(function (e) {e.preventDefault();$('#show_tag_div').css('display', '');})});</script>
+				<input class="prompt" style="width: 100%; " type="text" value="<%= req.query.keyword %>" placeholder="ID / 题目名 …" name="keyword">
                 <i class="search icon"></i>
               </div>
               <div class="results" style="width: 100%; "></div>
@@ -34,15 +36,15 @@ if (typeof tags !== 'undefined') tagIDs = tags.map(x => x.id);
         <% } %>
       </div>
       <div class="nine wide right aligned column">
-        <div class="ui toggle checkbox" id="show_tag">
+		<div class="ui toggle checkbox" id="show_tag">
           <style id="show_tag_style"></style>
           <script data-cfasync="false">
           if (localStorage.getItem('show_tag') === '1') {
             document.write('<input type="checkbox" checked>');
-            document.getElementById('show_tag_style').innerHTML = '.show_tag_controled { white-space: nowrap; overflow: hidden; }';
+            document.getElementById('show_tag_style').innerHTML = '.show_tag_controled { width: 0; white-space: nowrap; overflow: hidden; }';// 不显示tag
           } else {
             document.write('<input type="checkbox">');
-            document.getElementById('show_tag_style').innerHTML = '.show_tag_controled { width: 0; white-space: nowrap; overflow: hidden; }';
+            document.getElementById('show_tag_style').innerHTML = '.show_tag_controled { white-space: nowrap; overflow: hidden; }';// 显示tag
           }
           </script>
 
@@ -52,19 +54,21 @@ if (typeof tags !== 'undefined') tagIDs = tags.map(x => x.id);
               let checked = $('#show_tag').checkbox('is checked');
               localStorage.setItem('show_tag', checked ? '1' : '0');
               if (checked) {
-                document.getElementById('show_tag_style').innerHTML = '.show_tag_controled { white-space: nowrap; overflow: hidden; }';
+                document.getElementById('show_tag_style').innerHTML = '.show_tag_controled { width: 0; white-space: nowrap; overflow: hidden; }';// 不显示tag
               } else {
-                document.getElementById('show_tag_style').innerHTML = '.show_tag_controled { width: 0; white-space: nowrap; overflow: hidden; }';
+                document.getElementById('show_tag_style').innerHTML = '.show_tag_controled { white-space: nowrap; overflow: hidden; }';// 显示tag
               }
             });
           });
           </script>
-          <label>显示分类标签</label>
+          <label>不显示分类标签</label>
         </div>
         <div style="margin-left: 10px; display: inline-block; ">
           <% if (allowedManageTag) { %>
             <% if (typeof tags !== 'undefined' && tags.length === 1) { %>
               <a style="margin-left: 10px; " href="<%= syzoj.utils.makeUrl(['problems', 'tag', tags[0].id, 'edit']) %>" class="ui labeled icon mini blue button"><i class="write icon"></i> 编辑标签</a>
+            <% } else { %>
+            <a style="margin-left: 10px; " href="<%= syzoj.utils.makeUrl(['problems', 'tag']) %>" class="ui labeled icon mini blue button"><i class="write icon"></i> 编辑标签</a>
             <% } %>
             <a style="margin-left: 10px; " href="<%= syzoj.utils.makeUrl(['problems', 'tag', 0, 'edit']) %>" class="ui labeled icon mini green button"><i class="plus icon"></i> 添加标签</a>
           <% } %>
@@ -81,6 +85,21 @@ if (typeof tags !== 'undefined') tagIDs = tags.map(x => x.id);
     </div>
   </div>
 
+  <% if (typeof tags === 'undefined') { %>
+      <div class="row">
+        <div class="column">
+          <div class="ui bottom attached segment" style="display: none; " id="show_tag_div">
+			<% for (let tagi of alltags) { %>
+				<% let url = syzoj.utils.makeUrl(['problems', 'tag', tagi.id]); %>
+				<a href="<%= url %>" class="ui tiny <%= tagi.color %> label" style="margin:3px!important;"><%= tagi.name %></a>
+            <% } %>
+            <br>
+		  </div>
+        </div>
+      </div>
+  <% } %>
+
+  <br>
   <% if (problems.length) { %>
   <div style="margin-bottom: 30px; ">
     <% include page %>
@@ -93,6 +112,7 @@ if (typeof tags !== 'undefined') tagIDs = tags.map(x => x.id);
         <% } %>
         <th class="one wide"><%- createSortableTitle('id', '编号', true) %></th>
         <th class="left aligned"><%- createSortableTitle('title', '题目名称', true) %></th>
+        <th class="one wide">作者</th>
         <th class="one wide"><%- createSortableTitle('ac_num', '通过', false) %></th>
         <th class="one wide"><%- createSortableTitle('submit_num', '提交', false) %></th>
         <th class="one wide">通过率</th>
@@ -140,6 +160,7 @@ if (typeof tags !== 'undefined') tagIDs = tags.map(x => x.id);
                 %>
               </div>
             </td>
+			<td><a href="<%= syzoj.utils.makeUrl(['user', problem.user_id]) %>"><%= problem.user.username %></a></td>
             <td><%= problem.ac_num %></td>
             <td><%= problem.submit_num %></td>
             <td><%= problem.submit_num != 0 ? (((problem.ac_num / problem.submit_num * 100) || 0).toFixed(2) + '%') : '-' %></td>
@@ -189,3 +210,4 @@ $(function () {
 </script>
 </div>
 <% include footer %>
+

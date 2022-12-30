@@ -43,15 +43,34 @@ app.get('/problems', async (req, res) => {
       problem.allowedEdit = await problem.isAllowedEditBy(res.locals.user);
       problem.judge_state = await problem.getJudgeState(res.locals.user, true);
       problem.tags = await problem.getTags();
+      await problem.loadRelationships();
     });
 
-    res.render('problems', {
-      allowedManageTag: res.locals.user && await res.locals.user.hasPrivilege('manage_problem_tag'),
-      problems: problems,
-      paginate: paginate,
-      curSort: sort,
-      curOrder: order === 'asc'
-    });
+
+    let query_tag = ProblemTag.createQueryBuilder();
+    let alltags = await ProblemTag.queryAll(query_tag);
+
+    var deviceAgent = req.headers["user-agent"].toLowerCase();
+    var agentID = deviceAgent.match(/(iphone|ipod|ipad|android)/);
+    if(agentID != null){
+      res.render('problems_mobile', {
+        allowedManageTag: res.locals.user && await res.locals.user.hasPrivilege('manage_problem_tag'),
+        problems: problems,
+        paginate: paginate,
+        curSort: sort,
+        curOrder: order === 'asc',
+        alltags: alltags,
+		});
+    }else{
+      res.render('problems', {
+        allowedManageTag: res.locals.user && await res.locals.user.hasPrivilege('manage_problem_tag'),
+        problems: problems,
+        paginate: paginate,
+        curSort: sort,
+        curOrder: order === 'asc',
+        alltags: alltags,
+      });
+    }
   } catch (e) {
     syzoj.log(e);
     res.render('error', {
@@ -106,6 +125,7 @@ app.get('/problems/search', async (req, res) => {
       problem.allowedEdit = await problem.isAllowedEditBy(res.locals.user);
       problem.judge_state = await problem.getJudgeState(res.locals.user, true);
       problem.tags = await problem.getTags();
+      problem.loadRelationships();
     });
 
     res.render('problems', {
@@ -173,7 +193,7 @@ app.get('/problems/tag/:tagIDs', async (req, res) => {
       problem.allowedEdit = await problem.isAllowedEditBy(res.locals.user);
       problem.judge_state = await problem.getJudgeState(res.locals.user, true);
       problem.tags = await problem.getTags();
-
+      problem.loadRelationships();
       return problem;
     });
 
@@ -806,7 +826,7 @@ app.post('/problem/:id/testdata/delete/:filename', async (req, res) => {
     if (!problem) throw new ErrorMessage('无此题目。');
     if (!await problem.isAllowedEditBy(res.locals.user)) throw new ErrorMessage('您没有权限进行此操作。');
     if (typeof req.params.filename === 'string' && (req.params.filename.includes('../'))) throw new ErrorMessage('您没有权限进行此操作。)');
-    
+
     await problem.deleteTestdataSingleFile(req.params.filename);
 
     res.redirect(syzoj.utils.makeUrl(['problem', id, 'testdata']));
@@ -981,3 +1001,4 @@ app.post('/problem/:id/custom-test', app.multer.fields([{ name: 'code_upload', m
   }
 });
 */
+

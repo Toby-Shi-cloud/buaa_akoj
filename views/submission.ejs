@@ -29,6 +29,31 @@
     margin-bottom: -10px !important;
 }
 </style>
+
+<%
+    let gobackURL = "";
+    let gobackHint = "";
+    if(contestID != -1) {
+        gobackURL = syzoj.utils.makeUrl(['contest',contestID]);
+        gobackHint = "返回比赛";
+    } else {
+        gobackURL = syzoj.utils.makeUrl(['problem',real_problem_id]);
+        gobackHint = "返回题目";
+    }
+%>
+
+<script>
+  var contestID = "<%- contestID %>";
+  var real_problem_id = "<%- real_problem_id %>";
+  var goURL = "<%- gobackURL %>";
+</script>
+
+<div class="padding">
+    <div style="font-content">
+        <h3 class="ui header">以下是本次提交的评测信息（显示Unknown或Waiting表示正在排队评测，请勿多次提交）<a href="<%- gobackURL %>" class="ui blue label"><%- gobackHint %></a></h3>
+        <br>
+    </div>
+</div>
 <span id="submission_content">
 <div class="padding" id="vueAppFuckSafari">
   <table class="ui very basic center aligned table" id="status_table">
@@ -112,6 +137,7 @@
                   <code-box v-if="curCase.result.input" :title="'输入文件（<span style=\'font-family: monospace; \'>'+ curCase.result.input.name +'</span>）'" :content="curCase.result.input.content" :download="<%= serializejs(syzoj.utils.makeUrl(['problem', info.problemId, 'testdata', 'download'])) %> + '/' + curCase.result.input.name"></code-box>
                   <code-box v-if="curCase.result.output" :title="'答案文件（<span style=\'font-family: monospace; \'>'+ curCase.result.output.name +'</span>）'" :content="curCase.result.output.content" :download="<%= serializejs(syzoj.utils.makeUrl(['problem', info.problemId, 'testdata', 'download'])) %> + '/' + curCase.result.output.name"></code-box>
                   <code-box title="用户输出" :content="curCase.result.userOutput"></code-box>
+<!--                    <a :href="'javascript:alert(&quot;' + curCase.result.userOutput + '&quot;);'">测试<a/>-->
                   <code-box title="标准错误流" :content="curCase.result.userError"></code-box>
                   <code-box title="Special Judge 信息" :content="curCase.result.spjMessage"></code-box>
                   <code-box title="系统信息" :content="curCase.result.systemMessage"></code-box>
@@ -374,3 +400,4 @@ if (token != null) {
 </script>
 </span>
 <% include footer %>
+

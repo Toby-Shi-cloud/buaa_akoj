@@ -5,6 +5,14 @@
     text-align: center;
   }
 </style>
+
+<script type="text/javascript">
+    function pop(){
+        <% let tagsurl = syzoj.utils.makeUrl(['problems', 'tag']); %>
+      window.open ("<%= tagsurl %>",'','top=10,left=200,width=600,height=500,location=yes,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no');
+    }
+</script>
+
 <div class="padding">
     <form method="post" action="<%= syzoj.utils.makeUrl(['problem', req.params.id, 'edit']) %>">
       <div class="ui top attached tabular menu">
@@ -27,7 +35,7 @@
           <% } %>
           <label for="title">题目名称</label>
           <input class="font-content" type="text" id="title" name="title" value="<%= problem.title %>">
-        
+
           <label style="margin-top: 15px; " for="description">题目描述</label>
           <textarea class="markdown-edit" rows="15" id="description" name="description"><%= problem.description %></textarea>
           <label style="margin-top: 15px; " for="input_format">输入格式</label>
@@ -39,7 +47,8 @@
           <label style="margin-top: 15px; ">数据范围与提示</label>
           <textarea class="markdown-edit" rows="10" id="hint" name="limit_and_hint"><%= problem.limit_and_hint %></textarea>
 
-          <label style="margin-top: 15px; ">标签</label>
+          <label style="margin-top: 15px; ">标签
+		  <a href="javascript:pop()" class="ui tiny label">查看目前已有的标签</a></label>
           <select class="ui fluid search dropdown" multiple="" id="search_tags" name="tags">
             <% for (let tag of problem.tags) { %>
               <option value="<%= tag.id %>" selected><%= tag.name %></option>
@@ -73,6 +82,7 @@
       </div>
       <% } %>
     </form>
+
 </div>
 <script type="text/javascript">
 $(function () {
@@ -114,3 +124,4 @@ $(function () {
 });
 </script>
 <% include footer %>
+

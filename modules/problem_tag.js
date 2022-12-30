@@ -1,5 +1,21 @@
 let ProblemTag = syzoj.model('problem_tag');
 
+app.get('/problems/tag', async (req, res) => {
+  try {
+    let query = ProblemTag.createQueryBuilder();
+    let tags = await ProblemTag.queryAll(query);
+
+    res.render('problems_tag', {
+      tags: tags
+    });
+  } catch (e) {
+    syzoj.log(e);
+    res.render('error', {
+      err: e
+    });
+  }
+});
+
 app.get('/problems/tag/:id/edit', async (req, res) => {
   try {
     if (!res.locals.user || !await res.locals.user.hasPrivilege('manage_problem_tag')) throw new ErrorMessage('您没有权限进行此操作。');
@@ -55,3 +71,4 @@ app.post('/problems/tag/:id/edit', async (req, res) => {
     });
   }
 });
+

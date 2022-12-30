@@ -160,8 +160,10 @@ app.get('/submission/:id', async (req, res) => {
     if (!await judge.isAllowedVisitBy(curUser)) throw new ErrorMessage('您没有权限进行此操作。');
 
     let contest;
+    let contestID = -1;
     if (judge.type === 1) {
       contest = await Contest.findById(judge.type_info);
+      contestID = judge.type_info;
       contest.ended = contest.isEnded();
 
       if ((!contest.ended || !contest.is_public) &&
@@ -202,6 +204,8 @@ app.get('/submission/:id', async (req, res) => {
         displayConfig: displayConfig
       }, syzoj.config.session_secret) : null,
       displayConfig: displayConfig,
+      contestID: contestID,
+      real_problem_id: judge.problem_id
     });
   } catch (e) {
     syzoj.log(e);
@@ -233,3 +237,4 @@ app.post('/submission/:id/rejudge', async (req, res) => {
     });
   }
 });
+

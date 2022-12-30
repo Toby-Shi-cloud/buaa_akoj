@@ -23,10 +23,26 @@ if (contest) {
 
 <div class="ui center aligned grid">
     <div class="row">
-      <h1 class="ui header">
+      <h1 class="ui center aligned header">
         <% if (contest) { %>
-          <%= this.alpha(pid) %>. <%= syzoj.utils.removeTitleTag(problem.title) %>
-        <% } else { %>
+	
+        <div class="ui pagination menu" style="box-shadow: none; ">
+            <% let i = 0; for (let problem of problems) { i++; %>
+            <%  let st = ""; if (problem.judge_id) {
+                if (typeof problem.status === 'string') {
+                    if(problem.status === "Accepted") st = "background: #21ba45;color: rgba(255, 255, 255, 0.95);";
+                    else st = "background: #DB2828;color: rgba(255, 255, 255, 0.95);";
+                } else if (typeof problem.status === 'object') {
+                    if (problem.status.accepted)  st = "background: #21ba45;color: rgba(255, 255, 255, 0.95);";
+                    else st = "background: #DB2828;color: rgba(255, 255, 255, 0.95);";
+                }
+            } %>
+          <a class="item" href="<%= syzoj.utils.makeUrl(['contest', contest.id, 'problem', i]) %>" style="<%= st %>"><b><%= String.fromCharCode(i - 1 + 65) %></b></a>
+            <% } %>
+        </div>
+          <br><br><%= this.alpha(pid) %>. <%= syzoj.utils.removeTitleTag(problem.title) %>
+	
+		<% } else { %>
           #<%= problem.id %>. <%= problem.title %><% if (problem.allowedEdit && !problem.is_public) { %><span class="ui tiny red label">未公开</span><% } %>
         <% } %>
       </h1>
@@ -330,7 +346,7 @@ if (contest) {
                 </div>
               </div>
               <div class="ui center aligned vertical segment" style="padding-bottom: 0; ">
-                <button type="submit" class="ui labeled icon button"><i class="ui edit icon"></i>提交</button>
+                <button id="submit_btn" type="submit" class="ui labeled icon button"><i class="ui edit icon"></i>提交</button>
               </div>
             <% } %>
           </form>
@@ -348,21 +364,64 @@ if (contest) {
     <% if (state) { %>content = <%- serializejs(state.code) %>;<% } %>
     editor = window.createCodeEditor(editorElement, $('#languages-menu .item.active').data('mode'), content);
     window.editor = editor;
+    setInterval("updateCountdown()", "1000" );
   });
 
   var lastSubmitted = '';
 
+  function updateCountdown(){
+    let lastSubmitTime = parseInt(localStorage.getItem('submitTime'));
+    let currTime = (Date.parse(new Date()) / 1000);
+    if(lastSubmitTime == null) lastSubmitTime = 0;
+    if(currTime - lastSubmitTime < 30) {
+      document.getElementById('submit_btn').innerHTML="<i class=\"ui edit icon\"></i>提交过于频繁(请等待"+(30 - currTime + lastSubmitTime).toString()+"秒)";
+      document.getElementById('submit_btn').disabled = true;
+    } else {
+      document.getElementById('submit_btn').disabled = false;
+      document.getElementById('submit_btn').innerHTML="<i class=\"ui edit icon\"></i>提交";
+    }
+  }
+
   function submit_code() {
-    if (!$('#submit_code input[name=answer]').val().trim() && !editor.getValue().trim()) return false;
+    if (!$('#submit_code input[name=answer]').val().trim() && !editor.getValue().trim())
+      return false;
+
     $('#submit_code input[name=language]').val($('#languages-menu .item.active').data('value'));
     lastSubmitted = editor.getValue();
     $('#submit_code input[name=code]').val(editor.getValue());
+
+    let lastSubmitTime = parseInt(localStorage.getItem('submitTime'));
+    let submitTime = (Date.parse(new Date()) / 1000);
+
+    if(lastSubmitTime != null){
+      if(submitTime - lastSubmitTime < 30){
+        localStorage.setItem('submitTime',submitTime.toString());
+        document.getElementById('submit_btn').disabled = true;
+        document.getElementById('submit_btn').innerHTML="<i class=\"ui edit icon\"></i>提交过于频繁";
+        localStorage.setItem('returnLink',submitTime.toString());
+        alert("提交过于频繁，请30秒后重试");
+        return false;
+      }
+    }
+
+    <% if(contest) { %>
+      localStorage.setItem('contestID',<%- contest.id %>);
+      localStorage.setItem('problemID',<%- pid %>);
+    <% } else { %>
+      localStorage.setItem('contestID','-1');
+      localStorage.setItem('problemID',<%- problem.id %>);
+      <% } %>
+
+    localStorage.setItem('submitTime',submitTime.toString());
+    document.getElementById('submit_btn').disabled = true;
+    document.getElementById('submit_btn').innerHTML="<i class=\"ui edit icon\"></i>正在提交";
+    alert("提交成功，正在跳转到评测界面（请勿重复提交）");
     return true;
   }
 
   $('#languages-menu')[0].scrollTop = $('#languages-menu .active')[0].offsetTop - $('#languages-menu')[0].firstElementChild.offsetTop;
 
-  $(function () {
+  $(function(){
     $('#languages-menu .item').click(function() {
       $(this)
         .addClass('active')
@@ -391,3 +450,24 @@ if (contest) {
   </script>
 <% } %>
 <% include footer %>
+
+<script>
+$(document).ready(function (){
+    $("pre").prepend("<a class=\"copy-button ui button\" style=\"position: absolute;top: -1px;right: -7px;border-top-left-radius: 0px;border-bottom-right-radius: 0px\">复制</a>");
+    $(".copy-button").click(function() {
+        var element = $(this).siblings("code");
+        var text = $(element).text();
+        var $temp = $("<textarea>");
+        $("body").append($temp);
+        $temp.val(text).select();
+        document.execCommand("copy");
+        $temp.remove();
+        $(this).text("复制成功");
+
+        var e = this;
+        setTimeout(function() {
+            $(e).text("复制");
+        }, 500);
+    });
+});
+</script>
