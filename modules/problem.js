@@ -50,27 +50,14 @@ app.get('/problems', async (req, res) => {
     let query_tag = ProblemTag.createQueryBuilder();
     let alltags = await ProblemTag.queryAll(query_tag);
 
-    var deviceAgent = req.headers["user-agent"].toLowerCase();
-    var agentID = deviceAgent.match(/(iphone|ipod|ipad|android)/);
-    if(agentID != null){
-      res.render('problems_mobile', {
-        allowedManageTag: res.locals.user && await res.locals.user.hasPrivilege('manage_problem_tag'),
-        problems: problems,
-        paginate: paginate,
-        curSort: sort,
-        curOrder: order === 'asc',
-        alltags: alltags,
-		});
-    }else{
-      res.render('problems', {
-        allowedManageTag: res.locals.user && await res.locals.user.hasPrivilege('manage_problem_tag'),
-        problems: problems,
-        paginate: paginate,
-        curSort: sort,
-        curOrder: order === 'asc',
-        alltags: alltags,
-      });
-    }
+    res.render('problems', {
+      allowedManageTag: res.locals.user && await res.locals.user.hasPrivilege('manage_problem_tag'),
+      problems: problems,
+      paginate: paginate,
+      curSort: sort,
+      curOrder: order === 'asc',
+      alltags: alltags,
+    });
   } catch (e) {
     syzoj.log(e);
     res.render('error', {
