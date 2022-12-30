@@ -36,9 +36,18 @@ if (typeof tags !== 'undefined') tagIDs = tags.map(x => x.id);
           <form action="<%= syzoj.utils.makeUrl(['problems', 'search']) %>" method="get">
             <div class="ui search" style="width: 280px; height: 28px; margin-top: -5.3px; ">
               <div class="ui left icon input" style="width: 100%; ">
-                <button id="show_tag_button" class="ui icon button"><i class="tag icon"></i></button>
-                <script>$(function () {$('#show_tag_button').click(function (e) {e.preventDefault();$('#show_tag_div').css('display', '');})});</script>
-				<input class="prompt" style="width: 100%; " type="text" value="<%= req.query.keyword %>" placeholder="ID / 题目名 …" name="keyword">
+                <button id="show_tag_button" type="button" onclick="show_tags_1()" class="ui icon button"><i class="tag icon"></i></button>
+                <script>
+                  function show_tags_1(){
+                    if($('#show_tag_div')[0].style.display == "none"){
+                      $('#show_tag_div')[0].style.display = "";
+                    }else{
+                      $('#show_tag_div')[0].style.display = "none";
+                    }
+                  }
+                </script>
+                <!-- <script>$(function () {$('#show_tag_button').click(function (e) {e.preventDefault();$('#show_tag_div').css('display', '');})});</script> -->
+				        <input class="prompt" style="width: 100%; " type="text" value="<%= req.query.keyword %>" placeholder="ID / 题目名 …" name="keyword">
                 <i class="search icon"></i>
               </div>
               <div class="results" style="width: 100%; "></div>
