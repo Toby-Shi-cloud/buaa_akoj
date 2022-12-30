@@ -57,6 +57,54 @@ app.get('/', async (req, res) => {
   }
 });
 
+app.get('/dev', async (req, res) => {
+  try {
+    let ranklist = await User.queryRange([1, syzoj.config.page.ranklist_index], { is_show: true }, {
+      [syzoj.config.sorting.ranklist.field]: syzoj.config.sorting.ranklist.order
+    });
+    await ranklist.forEachAsync(async x => x.renderInformation());
+
+    let notices = await Article.queryRange([1, 5], { is_notice: true }, {
+      public_time: 'DESC'
+      });
+
+    await notices.forEachAsync(async notice => {
+        await notice.loadRelationships();
+        notice.allowedEdit = await notice.isAllowedEditBy(res.locals.user);
+        notice.allowedComment = await notice.isAllowedCommentBy(res.locals.user);
+        notice.content = await syzoj.utils.markdown(notice.content);
+    });
+
+    let fortune = null;
+    if (res.locals.user && syzoj.config.divine) {
+      fortune = Divine(res.locals.user.username, res.locals.user.sex);
+    }
+
+    let now_time = syzoj.utils.getCurrentDate();
+
+    let contests = await Contest.createQueryBuilder()
+    .where("is_public = true")
+    .andWhere("end_time > :now",{ now: now_time - 2592000 })
+    .orderBy("start_time","DESC")
+    .take(10)
+    .getMany();
+
+    res.render('nextindex', {
+      // ranklist: ranklist,
+      notices: notices,
+      fortune: fortune,
+      contests: contests,
+      // problems: problems,
+      links: syzoj.config.links
+    });
+  } catch (e) {
+    syzoj.log(e);
+    res.render('error', {
+      err: e
+    });
+  }
+});
+
 app.get('/help', async (req, res) => {
   try {
     res.render('help');
