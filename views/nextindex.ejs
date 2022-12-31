@@ -126,7 +126,7 @@
                     <br>
                 <% } %>
             </div>
-
+<!-- 
             <h4 class="ui top attached block header"><i class="ui rss icon"></i>新题放送</h4>
             <div class="ui bottom attached segment">
                 <table class="ui very basic compact center aligned table">
@@ -154,12 +154,24 @@
                     </table>
                     </tbody>
                 </div>
-            <% } %>
+            <% } %> -->
         </div>
         <div class="eleven wide column">
             <h4 class="ui top attached block header"><i class="ui glass cheers icon"></i>欢迎辞</h4>
-            <div class="ui bottom attached segment" style="line-height: 2!important;">
+            <div class="ui attached segment" style="line-height: 2!important;">
                 欢迎来到AKOJ，这里是北京航空航天大学AK宝典制作小组的在线程序测评平台。在这里你可以体验编程的乐趣，探索算法的神奇。这里提供包罗万象的程设题目，随时随地的实时测评，难度各异的大小赛事……希望在这里，你可以日积月累，也日新月异；你可以跬步千里，也步步为营。现在，让我们一起走进程序设计的世界吧！
+            </div>
+            
+            <div class="ui bottom attached segment">
+                <div class="grid-container">
+                    <% for (let hot of hot_feed) { %>
+                        <% if (hot.judge_state) { %>
+                            <div data-tooltip="<%= hot.title %>" data-position="top left" style="background-color: <%= statcolor[hot.judge_state.status] || lightgray %>;" onclick="window.location.replace('<%= syzoj.utils.makeUrl(['problem', hot.id]) %>')"></div>
+                        <% } else { %>
+                            <div data-tooltip="<%= hot.title %>" data-position="top left" style="background-color: lightgray;" onclick="window.location.replace('<%= syzoj.utils.makeUrl(['problem', hot.id]) %>')"></div>
+                        <% } %>
+                    <% } %>
+                </div>
             </div>
             <img src="bar.png" alt="AKOJ-PIC">
 
@@ -186,17 +198,6 @@
                     $('.ui.accordion').accordion();
                 });
             </script>
-            <div class="ui segment">
-                <div class="grid-container">
-                    <% for (let hot of hot_feed) { %>
-                        <% if (hot.judge_state) { %>
-                            <div style="background-color: <%= statcolor[hot.judge_state.status] || lightgray %>;"><a href="<%= syzoj.utils.makeUrl(['submission', hot.judge_state.id]) %>"></a></div>
-                        <% } else { %>
-                            <div style="background-color: lightgray;"></div>
-                        <% } %>
-                    <% } %>
-                </div>
-            </div>
         </div>
     </div>
 </div>
