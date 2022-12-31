@@ -23,160 +23,180 @@
         chengshe.push(contest);
     }
 %>
+
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+        grid-gap: 5px;
+        padding: 5px;
+        border-radius: 4px;
+    }
+
+    .grid-container > div {
+        width: 100%; /*100%父元素宽*/
+        height: 0; 
+        padding-bottom: 100%; /*撑高为父元素宽的100%*/
+    }
+</style>
+
 <div class="padding">
     <div class="ui grid">
         <div class="five wide column">
-            <%
-            if (fortune) {
-                let color;
-                if (fortune.fortune.indexOf('吉') != -1) color = '#0ccf00';
-                else if (fortune.fortune.indexOf('凶') != -1) color = '#f25e65';
-                else color = '#444';
-            %>
-            <h4 class="ui top attached block header"><i class="ui magic icon"></i>今日运势</h4>
-            <div class="ui bottom attached segment">
-                <div style="height: 15px; "></div>
-                <div class="ui two column center aligned padded grid">
-                    <div class="one column row">
-                        <div style="text-align: center; ">
-                            <div style="color: <%= color %>; font-size: 49px;"><%- (user.sex == -1 ? '♀ ' : '♂ ') + fortune.fortune + (user.sex == 1 ? ' <span style="transform: scaleX(-1); display: inline-block; ">♂</span>' : ' ♀') %></div>
-                        </div>
+
+            <% if(me) { %>
+            <div class="ui card" style="width: 100%; " id="user_card">
+                <div class="blurring dimmable image" id="avatar_container">
+                    <img src="<%= syzoj.utils.gravatar(me.email, 1000) %>">
+                </div>
+                <div class="content">
+                    <div class="header"><%= me.username %><% if (me.nameplate) { %><%- me.nameplate %><% } %></div>
+                    <div class="meta">
+                        <a class="group"><%= me.is_admin ? '管理员' : '普通用户' %></a>
                     </div>
-                    <div class="two column row">
-                        <div class="column">
-                            <div style="color: #0ccf00; ">
-                                <% if (fortune.good.length) { %>
-                                <strong>宜：</strong><%= fortune.good[0].title %>
-                                <br>
-                                <span style="color: #888; font-size: 0.7em; "><%= fortune.good[0].detail %></span>
-                                <div style="margin-top: 10px; "></div>
-                                <strong>宜：</strong><%= fortune.good[1].title %>
-                                <br>
-                                <span style="color: #888; font-size: 0.7em; "><%= fortune.good[1].detail %></span>
-                                <% } else { %>
-                                <strong>诸事不宜<br>
-                                </strong>
-                                <% } %>
-                            </div>
-                        </div>
-                        <div class="column">
-                            <div style="color: #f25e65; ">
-                                <% if (fortune.bad.length) { %>
-                                <strong>忌：</strong><%= fortune.bad[0].title %>
-                                <br>
-                                <span style="color: #888; font-size: 0.7em; "><%= fortune.bad[0].detail %></span>
-                                <div style="margin-top: 10px; "></div>
-                                <strong>忌：</strong><%= fortune.bad[1].title %>
-                                <br>
-                                <span style="color: #888; font-size: 0.7em; "><%= fortune.bad[1].detail %></span>
-                                <% } else { %>
-                                <strong>万事皆宜<br>
-                                </strong>
-                                <% } %>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+                <div class="extra content">
+                    <a><i class="check icon"></i>通过 <%= me.ac_problems.length %> 题</a>
+                    <a style="float: right; "><i class="star icon"></i>积分 <%= me.rating %></a>
                 </div>
             </div>
             <% } %>
-            <h4 class="ui top attached block header"><a href="<%= syzoj.utils.makeUrl(['contests']) %>">比赛</a></h4>
-            <div class="ui bottom attached segment">
-                即将举办<br>
+
+            <h4 class="ui top attached block header"><i class="ui dungeon icon"></i>比赛</h4>
+            <div class="ui bottom attached segment" style="line-height: 2!important;">
+                <span><h4>即将举办</h4></span>
                 <% if (todo.length == 0) { %>近期没有即将举办的比赛哦~<br><% } %>
                 <% for (let contest of todo) {
                     let now = syzoj.utils.getCurrentDate();
                     let tag = '';  %>
                 <% if (now < contest.start_time) { %>
-                <% tag = '<span class="ui header"><div class="ui mini red label">未开始</div></span>' %>
+                <% tag = '<div class="ui red empty circular label"></div>' %>
                 <% } else if (now >= contest.start_time && now < contest.end_time) { %>
-                <% tag = '<span class="ui header"><div class="ui mini green label">进行中</div></span>' %>
+                <% tag = '<div class="ui green empty circular label"></div>' %>
                 <% } else { %>
-                <% tag = '<span class="ui header"><div class="ui mini grey label">已结束</div></span>' %>
+                <% tag = '<div class="ui grey empty circular label"></div>' %>
                 <% } %>
-                    <a href="<%= syzoj.utils.makeUrl(['contest', contest.id]) %>"><%- tag %>&nbsp;<%= contest.title %></a>
-                    <!-- <%= syzoj.utils.formatDate(contest.start_time) %> -->
+                    <a href="<%= syzoj.utils.makeUrl(['contest', contest.id]) %>"><%- tag %>&nbsp;<%= contest.title %></a><br>
+                    比赛时间：<%= syzoj.utils.formatDate(contest.start_time) %><br>
                     <br>
                 <% } %>
-                自测系列<br>
+                <br><span><h4>自主测试</h4></span>
                 <% if (zice.length == 0) { %>近期没有自测赛哦~<br><% } %>
                 <% for (let contest of zice) {
                     let now = syzoj.utils.getCurrentDate();
                     let tag = '';  %>
                 <% if (now < contest.start_time) { %>
-                <% tag = '<span class="ui header"><div class="ui mini red label">未开始</div></span>' %>
+                <% tag = '<div class="ui red empty circular label"></div>' %>
                 <% } else if (now >= contest.start_time && now < contest.end_time) { %>
-                <% tag = '<span class="ui header"><div class="ui mini green label">进行中</div></span>' %>
+                <% tag = '<div class="ui green empty circular label"></div>' %>
                 <% } else { %>
-                <% tag = '<span class="ui header"><div class="ui mini grey label">已结束</div></span>' %>
+                <% tag = '<div class="ui grey empty circular label"></div>' %>
                 <% } %>
                     <a href="<%= syzoj.utils.makeUrl(['contest', contest.id]) %>"><%- tag %>&nbsp;<%= contest.title %></a>
-                    <!-- <%= syzoj.utils.formatDate(contest.start_time) %> -->
                     <br>
                 <% } %>
-                程序设计基础<br>
+                <br><span><h4>程序设计基础</h4></span>
                 <% if (chengshe.length == 0) { %>近期没有程序设计基础练习赛哦~<br><% } %>
                 <% for (let contest of chengshe) {
                     let now = syzoj.utils.getCurrentDate();
                     let tag = '';  %>
                 <% if (now < contest.start_time) { %>
-                <% tag = '<span class="ui header"><div class="ui mini red label">未开始</div></span>' %>
+                <% tag = '<div class="ui red empty circular label"></div>' %>
                 <% } else if (now >= contest.start_time && now < contest.end_time) { %>
-                <% tag = '<span class="ui header"><div class="ui mini green label">进行中</div></span>' %>
+                <% tag = '<div class="ui green empty circular label"></div>' %>
                 <% } else { %>
-                <% tag = '<span class="ui header"><div class="ui mini grey label">已结束</div></span>' %>
+                <% tag = '<div class="ui grey empty circular label"></div>' %>
                 <% } %>
                     <a href="<%= syzoj.utils.makeUrl(['contest', contest.id]) %>"><%- tag %>&nbsp;<%= contest.title %></a>
-                    <!-- <%= syzoj.utils.formatDate(contest.start_time) %> -->
                     <br>
                 <% } %>
-                数据结构<br>
+                <br><span><h4>数据结构</h4></span>
                 <% if (shujujiegou.length == 0) { %>近期没有数据结构练习赛哦~<br><% } %>
                 <% for (let contest of shujujiegou) {
                     let now = syzoj.utils.getCurrentDate();
                     let tag = '';  %>
                 <% if (now < contest.start_time) { %>
-                <% tag = '<span class="ui header"><div class="ui mini red label">未开始</div></span>' %>
+                <% tag = '<div class="ui red empty circular label"></div>' %>
                 <% } else if (now >= contest.start_time && now < contest.end_time) { %>
-                <% tag = '<span class="ui header"><div class="ui mini green label">进行中</div></span>' %>
+                <% tag = '<div class="ui green empty circular label"></div>' %>
                 <% } else { %>
-                <% tag = '<span class="ui header"><div class="ui mini grey label">已结束</div></span>' %>
+                <% tag = '<div class="ui grey empty circular label"></div>' %>
                 <% } %>
                     <a href="<%= syzoj.utils.makeUrl(['contest', contest.id]) %>"><%- tag %>&nbsp;<%= contest.title %></a>
-                    <!-- <%= syzoj.utils.formatDate(contest.start_time) %> -->
                     <br>
                 <% } %>
+            </div>
+
+            <h4 class="ui top attached block header"><i class="ui rss icon"></i>新题放送</h4>
+            <div class="ui bottom attached segment">
+                <table class="ui very basic compact center aligned table">
+                <tbody>
+                    <%
+                    for (let problem of problems) {
+                    %>
+                    <tr>
+                    <td><a href="<%= syzoj.utils.makeUrl(['problem', problem.id]) %>"><%= problem.title %></a></td>
+                    <td><a href="<%= syzoj.utils.makeUrl(['user',problem.user.id])%>"><%= problem.user.username %></a></td>
+                    </tr>
+                    <% } %>
+                </tbody>
+                </table>
             </div>
 
             <% if (typeof links !== 'undefined' && links && links.length) { %>
                 <h4 class="ui top attached block header font-content"><i class="ui linkify icon"></i>友情链接</h4>
                 <div class="ui bottom attached segment">
-                  <ul style="margin: 0; padding-left: 20px; ">
+                  <table class="ui very basic compact table" style="margin: 0; padding-left: 20px;">
+                    <tbody>
                     <% for (let link of links) { %>
-                      <li><a href="<%= link.url %>"><%= link.title %></a></li>
+                      <tr><td><a href="<%= link.url %>"><%= link.title %></a></td></tr>
                     <% } %>
-                  </ul>
+                    </table>
+                    </tbody>
                 </div>
             <% } %>
         </div>
         <div class="eleven wide column">
-            <h4 class="ui top attached block header"><a>欢迎辞</a></h4>
-            <div class="ui bottom attached segment">
-                欢迎进入程序设计的世界！这里是北京航空航天大学AK宝典制作小组的在线程序测评平台。
+            <h4 class="ui top attached block header"><i class="ui glass cheers icon"></i>欢迎辞</h4>
+            <div class="ui bottom attached segment" style="line-height: 2!important;">
+                欢迎来到AKOJ，这里是北京航空航天大学AK宝典制作小组的在线程序测评平台。在这里你可以体验编程的乐趣，探索算法的神奇。这里提供包罗万象的程设题目，随时随地的实时测评，难度各异的大小赛事……希望在这里，你可以日积月累，也日新月异；你可以跬步千里，也步步为营。现在，让我们一起走进程序设计的世界吧！
             </div>
-            <% for (let notice of notices) { %>
-                <h4 class="ui top attached block header"><a><%= notice.title %></a></h4>
-                <div class="ui attached segment">
-                    <div id="content" class="font-content"><%- notice.content %></div>
+            <img src="bar.png" alt="AKOJ-PIC">
+
+            <div class="ui styled fluid accordion">
+                <% let first_notice = true; %>
+                <% for (let notice of notices) { %>
+                    <div class="<% if (first_notice) { %>active<% } %> title">
+                        <i class="dropdown icon"></i>
+                        <%= notice.title %>
+                        </div>
+                        <div class="<% if (first_notice) { %>active<% } %> content">
+                        <div id="content" class="font-content" style="line-height: 2!important;"><%- notice.content %></div>
+                        <div style="text-align: right; margin-top: 20px;">
+                            <img style="vertical-align: middle; margin-bottom: 2px; margin-right: 2px; " src="<%= syzoj.utils.gravatar(notice.user.email, 34) %>" width="17" height="17">
+                            <b style="margin-right: 30px; "><a class="black-link" href="<%= syzoj.utils.makeUrl(['user', notice.user_id]) %>"><%= notice.user.username %></a><% if (notice.user.nameplate) { %><%- notice.user.nameplate %><% } %></b>
+                            <b style="margin-right: 30px; "><i class="calendar icon"></i> <%= syzoj.utils.formatDate(notice.public_time) %></b>
+                            <button class="ui right labeled small icon button" onclick="window.location.href='<%= syzoj.utils.makeUrl(['article', notice.id]) %>'"><i class="right arrow icon"></i>转到</button>
+                        </div>
+                    </div>
+                <% first_notice = false; } %>
+            </div>
+            <script>
+                $(function() {
+                    $('.ui.accordion').accordion();
+                });
+            </script>
+            <div class="ui segment">
+                <div class="grid-container">
+                    <% for (let hot of hot_feed) { %>
+                        <% if (hot.judge_state) { %>
+                            <div style="background-color: <%= statcolor[hot.judge_state.status] || lightgray %>;"><a href="<%= syzoj.utils.makeUrl(['submission', hot.judge_state.id]) %>"></a></div>
+                        <% } else { %>
+                            <div style="background-color: lightgray;"></div>
+                        <% } %>
+                    <% } %>
                 </div>
-                <div class="ui bottom attached right aligned segment" style="
-                padding-top: 8px;
-                padding-bottom: 8px;
-            ">
-                    <img style="vertical-align: middle; margin-bottom: 2px; margin-right: 2px; " src="<%= syzoj.utils.gravatar(notice.user.email, 34) %>" width="17" height="17">
-                    <b style="margin-right: 30px; "><a class="black-link" href="<%= syzoj.utils.makeUrl(['user', notice.user_id]) %>"><%= notice.user.username %></a><% if (notice.user.nameplate) { %><%- notice.user.nameplate %><% } %></b>
-                    <b style="margin-right: 30px; "><i class="calendar icon"></i> <%= syzoj.utils.formatDate(notice.public_time) %></b>
-                </div>
-            <% } %>
+            </div>
         </div>
     </div>
 </div>

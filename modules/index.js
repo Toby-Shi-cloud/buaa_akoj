@@ -59,14 +59,14 @@ app.get('/', async (req, res) => {
 
 app.get('/dev', async (req, res) => {
   try {
-    let ranklist = await User.queryRange([1, syzoj.config.page.ranklist_index], { is_show: true }, {
-      [syzoj.config.sorting.ranklist.field]: syzoj.config.sorting.ranklist.order
-    });
-    await ranklist.forEachAsync(async x => x.renderInformation());
+    // let ranklist = await User.queryRange([1, syzoj.config.page.ranklist_index], { is_show: true }, {
+    //   [syzoj.config.sorting.ranklist.field]: syzoj.config.sorting.ranklist.order
+    // });
+    // await ranklist.forEachAsync(async x => x.renderInformation());
 
     let notices = await Article.queryRange([1, 5], { is_notice: true }, {
       public_time: 'DESC'
-      });
+    });
 
     await notices.forEachAsync(async notice => {
         await notice.loadRelationships();
@@ -75,10 +75,10 @@ app.get('/dev', async (req, res) => {
         notice.content = await syzoj.utils.markdown(notice.content);
     });
 
-    let fortune = null;
-    if (res.locals.user && syzoj.config.divine) {
-      fortune = Divine(res.locals.user.username, res.locals.user.sex);
-    }
+    // let fortune = null;
+    // if (res.locals.user && syzoj.config.divine) {
+    //   fortune = Divine(res.locals.user.username, res.locals.user.sex);
+    // }
 
     let now_time = syzoj.utils.getCurrentDate();
 
@@ -89,13 +89,47 @@ app.get('/dev', async (req, res) => {
     .take(10)
     .getMany();
 
+    let problems = await Problem.createQueryBuilder()
+    .where("is_public = true")
+    .orderBy("publicize_time","DESC")
+    .take(7)
+    .getMany();
+
+    await problems.forEachAsync(async problem => {
+      await problem.loadRelationships();
+    })
+
+    // 检索用户所有题的提交结果，以生成热力图
+    let query = Problem.createQueryBuilder();
+    if (!res.locals.user || !await res.locals.user.hasPrivilege('manage_problem')) {
+      if (res.locals.user) {
+        query.where('is_public = 1')
+             .orWhere('user_id = :user_id', { user_id: res.locals.user.id });
+      } else {
+        query.where('is_public = 1');
+      }
+    }
+    
+    let hot_feed = await query.getMany();
+
+    await hot_feed.forEachAsync(async problem => {
+      problem.judge_state = await problem.getJudgeState(res.locals.user, true);
+    });
+
+    let me = res.locals.user;
+    if(me){
+      me.ac_problems = await me.getACProblems();
+    }
+
     res.render('nextindex', {
       // ranklist: ranklist,
       notices: notices,
-      fortune: fortune,
+      // fortune: fortune,
       contests: contests,
-      // problems: problems,
-      links: syzoj.config.links
+      problems: problems,
+      hot_feed: hot_feed,
+      links: syzoj.config.links,
+      me: me,
     });
   } catch (e) {
     syzoj.log(e);
