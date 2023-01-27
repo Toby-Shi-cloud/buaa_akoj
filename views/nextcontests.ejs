@@ -1,0 +1,82 @@
+<% this.title = '比赛' %>
+<!-- modified by zyyyyyyyyyyyy -->
+
+
+<% include header %>
+<div class="padding">
+    <% if (contests.length) { %>
+
+    <% if (user && user.is_admin) { %>
+    <form class="ui mini form">
+      <div class="inline fields" style="margin-bottom: 25px; white-space: nowrap; ">
+        <a href="<%= syzoj.utils.makeUrl(['contest', 0, 'edit']) %>" class="ui mini labeled icon right floated button" style="margin-left: auto; ">
+          <i class="ui icon write"></i>
+          添加比赛
+        </a>
+     </div>
+    </form>
+    <% } %>
+
+    <div class = "ui grid">
+			<%
+			for (let contest of contests) {
+			let now = syzoj.utils.getCurrentDate();
+			let tag = '';
+			let subject = ''
+			%>
+				
+			<div class = "eight wide column">
+				<% if (now < contest.start_time) { %>
+						<% tag = '<span class="ui header"><div class="ui mini red label">未开始</div></span>' %>
+				<% } else if (now >= contest.start_time && now < contest.end_time) { %>
+						<% tag = '<span class="ui header"><div class="ui mini green label">进行中</div></span>' %>
+				<% } else { %>
+						<% tag = '<span class="ui header"><div class="ui mini grey label">已结束</div></span>' %>
+				<% } %>
+
+				
+				<%
+					if (contest.title.includes("自测"))	{ subject = "自主测试"; }
+					else if (contest.title.includes("数据结构") | contest.title.includes("数构")) { subject = "数据结构"; }
+					else { subject = "程序设计基础";}
+				%>
+
+				<a class="ui card" href="<%= syzoj.utils.makeUrl(['contest', contest.id]) %>" style="width: 100%">
+					<div class="content">
+						<div class="header"><%= contest.title %> <%- tag %></div>
+						<div class="meta">
+						<span class="category"><%- subject %></span>
+						</div>
+						<div class="description">
+								开始于：<%= syzoj.utils.formatDate(contest.start_time) %><br>
+								结束于：<%= syzoj.utils.formatDate(contest.end_time) %>
+								<div class="font-content"><%- contest.subtitle %></div>
+						</div>
+					</div>
+					<div class="extra content">
+						<div class="right floated author">
+						<img class="ui avatar image" src="<%= syzoj.utils.gravatar(contest.holder.email, 34) %>"> <%- contest.holder.username %>
+						</div>
+					</div>
+				</a>
+			</div>
+			<% } %>
+		</div>
+    <% } else { %>  <!-- if there's no contests -->
+    <div class="ui placeholder segment">
+      <div class="ui icon header">
+        <i class="calendar icon" style="margin-bottom: 20px; "></i>
+        暂无比赛
+      </div>
+      <% if (user && user.is_admin) { %>
+      <a href="<%= syzoj.utils.makeUrl(['contest', 0, 'edit']) %>" class="ui primary labeled icon button">
+        <i class="ui icon write"></i>
+        添加第一场比赛
+      </a>
+      <% } %>
+    </div>
+    <% } %>
+  <br>
+  <% include page %>
+</div>
+<% include footer %>

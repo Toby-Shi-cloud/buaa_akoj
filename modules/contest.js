@@ -8,7 +8,7 @@ let User = syzoj.model('user');
 const jwt = require('jsonwebtoken');
 const { getSubmissionInfo, getRoughResult, processOverallResult } = require('../libs/submissions_process');
 
-app.get('/contests', async (req, res) => {
+app.get('/legacy/contests', async (req, res) => {
   try {
     let where;
     if (res.locals.user && res.locals.user.is_admin) where = {}
@@ -19,13 +19,43 @@ app.get('/contests', async (req, res) => {
       start_time: 'DESC'
     });
 
-    await contests.forEachAsync(async x => x.subtitle = await syzoj.utils.markdown(x.subtitle));
+    await contests.forEachAsync(async contest  => {
+      contest.subtitle = await syzoj.utils.markdown(contest.subtitle);
+      await contest.loadRelationships();
+    });
 
     res.render('contests', {
       contests: contests,
       paginate: paginate
     })
   } catch (e) {
+    syzoj.log(e);
+    res.render('error', {
+      err: e
+    });
+  }
+});
+
+app.get('/contests', async (req, res) => {
+  try {
+    let query = Contest.createQueryBuilder();
+
+    if (!res.locals.user || !res.locals.user.is_admin) query.where('is_public = 1');
+    query.orderBy('start_time','DESC');
+
+    let paginate = syzoj.utils.paginate(await Contest.countForPagination(query), req.query.page, syzoj.config.page.contest);
+    let contests = await Contest.queryPage(paginate, query);
+
+    await contests.forEachAsync(async contest  => {
+      contest.subtitle = await syzoj.utils.markdown(contest.subtitle);
+      await contest.loadRelationships();
+    });
+
+    res.render('nextcontests', {
+      contests: contests,
+      paginate: paginate
+    })
+  } catch(e) {
     syzoj.log(e);
     res.render('error', {
       err: e
@@ -207,20 +237,19 @@ app.get('/contest/:id', async (req, res) => {
 
         for (let player of players) {
           if (player.score_details[problem.problem.id]) {
-            problem.statistics.attempt++;
             if ((contest.type === 'acm' && player.score_details[problem.problem.id].accepted) || ((contest.type === 'noi' || contest.type === 'ioi') && player.score_details[problem.problem.id].score === 100)) {
               problem.statistics.accepted++;
-            }
-
-            if ((contest.type === 'noi' || contest.type === 'ioi') && player.score_details[problem.problem.id].score > 0) {
+            } else if ((contest.type === 'noi' || contest.type === 'ioi') && player.score_details[problem.problem.id].score > 0) {
               problem.statistics.partially++;
+            } else {
+              problem.statistics.attempt++;
             }
           }
         }
       }
     }
 
-    res.render('contest', {
+    res.render('nextcontest', {
       contest: contest,
       problems: problems,
       hasStatistics: hasStatistics,

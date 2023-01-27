@@ -8,7 +8,7 @@ let zh = require('../libs/timeago');
 TimeAgo.locale(zh);
 const timeAgo = new TimeAgo('zh-CN');
 
-app.get('/', async (req, res) => {
+app.get('/legacy', async (req, res) => { // Original index page of SYZOJ
   try {
     let ranklist = await User.queryRange([1, syzoj.config.page.ranklist_index], { is_show: true }, {
       [syzoj.config.sorting.ranklist.field]: syzoj.config.sorting.ranklist.order
@@ -59,15 +59,11 @@ app.get('/', async (req, res) => {
 
 app.get('/dev', async (req, res) => {
   try {
-    // let ranklist = await User.queryRange([1, syzoj.config.page.ranklist_index], { is_show: true }, {
-    //   [syzoj.config.sorting.ranklist.field]: syzoj.config.sorting.ranklist.order
-    // });
-    // await ranklist.forEachAsync(async x => x.renderInformation());
-
+    
+    // Query recent notices
     let notices = await Article.queryRange([1, 5], { is_notice: true }, {
       public_time: 'DESC'
     });
-
     await notices.forEachAsync(async notice => {
         await notice.loadRelationships();
         notice.allowedEdit = await notice.isAllowedEditBy(res.locals.user);
@@ -75,13 +71,8 @@ app.get('/dev', async (req, res) => {
         notice.content = await syzoj.utils.markdown(notice.content);
     });
 
-    // let fortune = null;
-    // if (res.locals.user && syzoj.config.divine) {
-    //   fortune = Divine(res.locals.user.username, res.locals.user.sex);
-    // }
-
+    // Query recently hold contests
     let now_time = syzoj.utils.getCurrentDate();
-
     let contests = await Contest.createQueryBuilder()
     .where("is_public = true")
     .andWhere("end_time > :now",{ now: now_time - 2592000 })
@@ -89,6 +80,7 @@ app.get('/dev', async (req, res) => {
     .take(10)
     .getMany();
 
+    // Query recently updated problems
     let problems = await Problem.createQueryBuilder()
     .where("is_public = true")
     .orderBy("publicize_time","DESC")
@@ -99,7 +91,7 @@ app.get('/dev', async (req, res) => {
       await problem.loadRelationships();
     })
 
-    // 检索用户所有题的提交结果，以生成热力图
+    // Query all submissions to create heatmap
     let query = Problem.createQueryBuilder();
     if (!res.locals.user || !await res.locals.user.hasPrivilege('manage_problem')) {
       if (res.locals.user) {
@@ -122,9 +114,7 @@ app.get('/dev', async (req, res) => {
     }
 
     res.render('nextindex', {
-      // ranklist: ranklist,
       notices: notices,
-      // fortune: fortune,
       contests: contests,
       problems: problems,
       hot_feed: hot_feed,
