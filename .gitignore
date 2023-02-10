@@ -66,3 +66,5 @@ tags
 backup/
 
 # End of https://www.gitignore.io/api/vim
+
+config-example.json

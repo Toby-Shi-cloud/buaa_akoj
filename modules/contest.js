@@ -178,6 +178,10 @@ app.get('/contest/:id', async (req, res) => {
     let problems_id = await contest.getProblems();
     let problems = await problems_id.mapAsync(async id => await Problem.findById(id));
 
+    await problems.forEachAsync(async problem  => {
+      await problem.loadRelationships();
+    });
+    
     let player = null;
 
     if (res.locals.user) {

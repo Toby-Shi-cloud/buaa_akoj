@@ -91,6 +91,9 @@ function submit() {
                 case 2010:
                     show_error("验证邮件发送失败：\n" + data.message);
                     break;
+                case 2011:
+                    show_error("请使用以edu.cn或edu结尾的高校邮箱注册");
+                    break;
                 case 1:
                     success();
                     break;

@@ -319,6 +319,7 @@ module.exports = {
     });
   },
   getCurrentLocation(req, hostOnly) {
+    return 'http://akoj.online/'
     const currentProto = req.get("X-Forwarded-Proto") || req.protocol,
           host = currentProto + '://' + req.get('host');
     if (hostOnly) return host;

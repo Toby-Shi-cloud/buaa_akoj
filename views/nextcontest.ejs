@@ -7,6 +7,15 @@
 #back_to_contest { display: none;  }
 </style>
 <% include header %>
+<% 
+  let contr = [];
+  for (let problem of problems) {
+    contr_user = problem.problem.user.username;
+    if (contr.indexOf(contr_user) === -1) {
+      contr.push(contr_user);
+    }
+  }
+%>
 <div class="padding">
   <h1><%= contest.title %></h1>
   <div style="margin-bottom: 30px;"><%- contest.subtitle %></div>
@@ -50,6 +59,16 @@
       </div>
     </div>
   <% } %>
+  <div class="row">
+    <div class="column">
+      <h4 class="ui top attached block header">命题组</h4>
+      <div class="ui bottom attached segment font-content">
+        <% for (let contr_user of contr) { %>
+          <%- contr_user %> 
+        <% } %>
+      </div>
+    </div>
+  </div>
   <% if (unveiled) { %>
     <!-- problem list start here -->
     <div class="row">

@@ -79,6 +79,7 @@ app.post('/api/sign_up', async (req, res) => {
     if (req.body.password === syzoj2_xxx_md5) throw 2007;
     if (!(req.body.email = req.body.email.trim())) throw 2006;
     if (!syzoj.utils.isValidUsername(req.body.username)) throw 2002;
+    if (!req.body.email.endsWith("edu.cn") && !req.body.email.endsWith("edu")) throw 2011;
 
     if (syzoj.config.register_mail) {
       let sendObj = {
@@ -186,6 +187,7 @@ app.get('/api/sign_up_confirm', async (req, res) => {
     if (user) throw new ErrorMessage('用户名已被占用。');
     user = await User.findOne({ where: { email: obj.email } });
     if (user) throw new ErrorMessage('邮件地址已被占用。');
+    if (!obj.email.endsWith('edu.cn') && !obj.email.endsWith('edu')) throw new ErrorMessage('请使用以edu.cn或edu结尾的高校邮箱注册');
 
     // Because the salt is "syzoj2_xxx" and the "syzoj2_xxx" 's md5 is"59cb..."
     // the empty password 's md5 will equal "59cb.."
