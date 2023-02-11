@@ -11,6 +11,10 @@
                 <label>比赛描述</label>
                 <input type="text" name="subtitle" class="markdown-edit" value="<%= contest.subtitle %>">
               </div>
+              <div class="field">
+                <label>比赛科目</label>
+                <input type="text" name="subject" value="<%= contest.subject %>">
+              </div>
             <div class="field">
                 <label>试题列表</label>
                 <select class="ui fluid search dropdown" multiple="" id="search_problems" name="problems">
@@ -45,6 +49,27 @@
                 <div class="ui radio checkbox">
                   <input <% if (contest.id) { %>disabled <% } %>type="radio" name="type" id="type-acm" value="acm"<% if (contest.type === 'acm') { %> checked="checked"<% } %>>
                   <label for="type-acm">ICPC</label>
+                </div>
+              </div>
+            </div>
+            <div class="inline fields">
+              <label>可用语言</label>
+              <div class="field">
+                <div class="ui radio checkbox">
+                  <input type="radio" name="uselang" id="uselang-all" value="all"<% if (contest.uselang === 'all' || !contest.uselang) { %> checked="checked"<% } %>>
+                  <label for="uselang-all">全部</label>
+                </div>
+              </div>
+              <div class="field">
+                <div class="ui radio checkbox">
+                  <input type="radio" name="uselang" id="uselang-c_only" value="c_only"<% if (contest.uselang === 'c_only') { %> checked="checked"<% } %>>
+                  <label for="uselang-c_only">C</label>
+                </div>
+              </div>
+              <div class="field">
+                <div class="ui radio checkbox">
+                  <input type="radio" name="uselang" id="uselang-c_and_cpp" value="c_and_cpp"<% if (contest.uselang === 'c_and_cpp') { %> checked="checked"<% } %>>
+                  <label for="uselang-c_and_cpp">C与C++</label>
                 </div>
               </div>
             </div>

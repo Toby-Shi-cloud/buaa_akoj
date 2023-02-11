@@ -117,6 +117,7 @@ app.post('/contest/:id/edit', async (req, res) => {
       // Only new contest can be set type
       if (!['noi', 'ioi', 'acm'].includes(req.body.type)) throw new ErrorMessage('无效的赛制。');
       contest.type = req.body.type;
+
     } else {
       // if contest exists, both system administrators and contest administrators can edit it.
       if (!res.locals.user || (!res.locals.user.is_admin && !contest.admins.includes(res.locals.user.id.toString()))) throw new ErrorMessage('您没有权限进行此操作。');
@@ -145,6 +146,10 @@ app.post('/contest/:id/edit', async (req, res) => {
     contest.end_time = syzoj.utils.parseDate(req.body.end_time);
     contest.is_public = req.body.is_public === 'on';
     contest.hide_statistics = req.body.hide_statistics === 'on';
+    contest.subject = req.body.subject;
+    
+    if (!['all', 'c_only', 'c_and_cpp'].includes(req.body.uselang)) throw new ErrorMessage('无效的语言。');
+    contest.uselang = req.body.uselang;
 
     await contest.save();
 

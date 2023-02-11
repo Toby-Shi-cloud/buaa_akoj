@@ -14,6 +14,12 @@ enum ContestType {
   ICPC = "acm"
 }
 
+enum UseLang {
+  ALL = "all",
+  C = "c_only",
+  CC = "c_and_cpp",
+}
+
 @TypeORM.Entity()
 export default class Contest extends Model {
   static cache = true;
@@ -59,6 +65,12 @@ export default class Contest extends Model {
 
   @TypeORM.Column({ nullable: true, type: "boolean" })
   hide_statistics: boolean;
+
+  @TypeORM.Column({ nullable: true, type: "varchar", length: 10 })
+  subject: string;
+  
+  @TypeORM.Column({ nullable: true, type: "enum", enum: UseLang })
+  uselang: UseLang;
 
   holder?: User;
   ranklist?: ContestRanklist;

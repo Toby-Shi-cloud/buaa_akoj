@@ -322,8 +322,19 @@ if (contest) {
                       language = state.language;
                     } else if (lastLanguage) language = lastLanguage;
                     if (!syzoj.config.enabled_languages.includes(language)) language = syzoj.config.enabled_languages[0];
+                    if (contest) {
+                      if (contest.uselang === 'c_only') {
+                        all_lang = ['c'];
+                      } else if (contest.uselang === 'c_and_cpp') {
+                        all_lang = ['c', 'cpp'];
+                      } else {
+                        all_lang = syzoj.config.enabled_languages;
+                      }
+                    } else {
+                      all_lang = syzoj.config.enabled_languages;
+                    }
                     %>
-                    <% for (lang of syzoj.config.enabled_languages) { %>
+                    <% for (lang of all_lang) { %>
                       <a style="border-radius: 0; " class="item<%= lang === language ? ' active' : '' %>" data-value="<%= lang %>" data-mode="<%= syzoj.languages[lang].editor %>">
                         <%= syzoj.languages[lang].show %>
                         <div class="ui right floated" style="opacity: 0.4; margin-top: 8px; font-size: 0.7em; "><%= syzoj.languages[lang].version %></div>
