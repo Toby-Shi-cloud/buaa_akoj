@@ -66,7 +66,7 @@
     </script>
     <% } %>
 
-	<% if(!user & !active.startsWith('login') & !active.startsWith('sign_up') & !active.startsWith('forget') ) { %>
+	<% if(!user & !active.startsWith('login') & !active.startsWith('sign_up') & !active.startsWith('forget') & !active.startsWith('api')) { %>
 	<script>
 		window.location.replace("<%- syzoj.utils.makeUrl(['login']) %>");
 	</script>

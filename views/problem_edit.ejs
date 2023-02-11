@@ -11,6 +11,13 @@
         <% let tagsurl = syzoj.utils.makeUrl(['problems', 'tag']); %>
       window.open ("<%= tagsurl %>",'','top=10,left=200,width=600,height=500,location=yes,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no');
     }
+
+    function add_example() {
+      if (!example.value.endsWith('\n') && example.value != '') {
+        example.value += '\n';
+      }
+      example.value += "### 【样例输入】\n```\nInput here...\n```\n\n### 【样例输出】\n```\nOutput here...\n```\n\n"
+    }
 </script>
 
 <div class="padding">
@@ -42,13 +49,11 @@
           <textarea class="markdown-edit" rows="10" id="input" name="input_format"><%= problem.input_format %></textarea>
           <label style="margin-top: 15px; " for="output_format">输出格式</label>
           <textarea class="markdown-edit" rows="10" id="output" name="output_format"><%= problem.output_format %></textarea>
-          <label style="margin-top: 15px; ">样例</label>
+          <label style="margin-top: 15px; ">样例&nbsp;&nbsp;<a href="javascript:add_example()" class="ui tiny label">查看目前已有的标签</a></label>
           <textarea class="markdown-edit" rows="15" id="example" name="example"><%= problem.example %></textarea>
           <label style="margin-top: 15px; ">数据范围与提示</label>
           <textarea class="markdown-edit" rows="10" id="hint" name="limit_and_hint"><%= problem.limit_and_hint %></textarea>
-
-          <label style="margin-top: 15px; ">标签
-		  <a href="javascript:pop()" class="ui tiny label">查看目前已有的标签</a></label>
+          <label style="margin-top: 15px; ">标签&nbsp;&nbsp;<a href="javascript:pop()" class="ui tiny label">查看目前已有的标签</a></label>
           <select class="ui fluid search dropdown" multiple="" id="search_tags" name="tags">
             <% for (let tag of problem.tags) { %>
               <option value="<%= tag.id %>" selected><%= tag.name %></option>
