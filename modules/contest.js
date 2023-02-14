@@ -1,5 +1,6 @@
 let Contest = syzoj.model('contest');
 let ContestRanklist = syzoj.model('contest_ranklist');
+let ContestNotice = syzoj.model('contest_notice');
 let ContestPlayer = syzoj.model('contest_player');
 let Problem = syzoj.model('problem');
 let JudgeState = syzoj.model('judge_state');
@@ -7,6 +8,49 @@ let User = syzoj.model('user');
 
 const jwt = require('jsonwebtoken');
 const { getSubmissionInfo, getRoughResult, processOverallResult } = require('../libs/submissions_process');
+
+app.post('/contest/:id/notice/send', async (req, res) => {
+  try {
+    let contest_id = parseInt(req.params.id);
+    let contest = await Contest.findById(contest_id);
+
+    if (!contest) throw new ErrorMessage('比赛不存在。');
+    // if contest exists, both system administrators and contest administrators can edit it.
+    if (!res.locals.user || (!res.locals.user.is_admin && !contest.admins.includes(res.locals.user.id.toString()))) throw new ErrorMessage('您没有权限进行此操作。');
+
+    notice = await ContestNotice.create();
+    notice.user_id = res.locals.user.id;
+    notice.contest_id = contest_id;
+    notice.time = parseInt((new Date()).getTime() / 1000);
+    notice.title = req.body.title;
+    notice.content = req.body.content;
+
+    await notice.save();
+
+    res.redirect(syzoj.utils.makeUrl(['contest', contest.id]));
+  } catch (e) {
+    syzoj.log(e);
+    res.send(e);
+  }
+});
+
+app.get('/contest/:id/notice/send', async (req, res) => {
+  try {
+    let contest_id = parseInt(req.params.id);
+    let contest = await Contest.findById(contest_id);
+
+    if (!contest) throw new ErrorMessage('比赛不存在。');
+    // if contest exists, both system administrators and contest administrators can edit it.
+    if (!res.locals.user || (!res.locals.user.is_admin && !contest.admins.includes(res.locals.user.id.toString()))) throw new ErrorMessage('您没有权限进行此操作。');
+
+    res.render('contest_notice_edit')
+  } catch(e) {
+    syzoj.log(e);
+    res.render('error', {
+      err: e
+    });
+  }
+});
 
 app.get('/legacy/contests', async (req, res) => {
   try {
@@ -545,7 +589,7 @@ app.get('/contest/:id/problem/:pid', async (req, res) => {
     let problems_id = await contest.getProblems();
     let problems = await problems_id.mapAsync(async id => await Problem.findById(id));
 
-	let pid = parseInt(req.params.pid);
+	  let pid = parseInt(req.params.pid);
     if (!pid || pid < 1 || pid > problems_id.length) throw new ErrorMessage('无此题目。');
 
     let problem_id = problems_id[pid - 1];
@@ -583,9 +627,9 @@ app.get('/contest/:id/problem/:pid', async (req, res) => {
         if (player.score_details[problem.problem.id]) {
           let judge_state = await JudgeState.findById(player.score_details[problem.problem.id].judge_id);
           problem.status = judge_state.status;
-          if (!contest.ended && !await problem.problem.isAllowedEditBy(res.locals.user) && !['Compile Error', 'Waiting', 'Compiling'].includes(problem.status)) {
-            problem.status = 'Submitted';
-          }
+          // if (!contest.ended && !await problem.problem.isAllowedEditBy(res.locals.user) && !['Compile Error', 'Waiting', 'Compiling'].includes(problem.status)) {
+          //   problem.status = 'Submitted';
+          // }
           problem.judge_id = player.score_details[problem.problem.id].judge_id;
         }
       }

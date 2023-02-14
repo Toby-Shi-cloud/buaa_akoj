@@ -50,16 +50,6 @@
       </div>
     </div>
   <% } %>
-    <div class="row">
-      <div class="column">
-        <h4 class="ui top attached block header">命题组</h4>
-        <div class="ui bottom attached segment font-content">
-          <% for (let problem of problems) { %>
-            <%- problem.problem.user.username %> 
-          <% } %>
-        </div>
-      </div>
-    </div>
   <% if (unveiled) { %>
     <div class="row">
       <div class="column">

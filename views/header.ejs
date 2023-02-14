@@ -1,3 +1,18 @@
+<!--
+         _                   _              _                  _
+        / /\                /\_\           /\ \               /\ \
+       / /  \              / / /  _       /  \ \              \ \ \
+      / / /\ \            / / /  /\_\    / /\ \ \             /\ \_\
+     / / /\ \ \          / / /__/ / /   / / /\ \ \           / /\/_/
+    / / /  \ \ \        / /\_____/ /   / / /  \ \_\ _       / / /
+   / / /___/ /\ \      / /\_______/   / / /   / / //\ \    / / /
+  / / /_____/ /\ \    / / /\ \ \     / / /   / / / \ \_\  / / /
+ / /_________/\ \ \  / / /  \ \ \   / / /___/ / /  / / /_/ / /
+/ / /_       __\ \_\/ / /    \ \ \ / / /____\/ /  / / /__\/ /
+\_\___\     /____/_/\/_/      \_\_\\/_________/   \/_______/
+
+北京航空航天大学AK宝典制作小组倾情奉献
+-->
 <% include util %>
 <!DOCTYPE html>
 <html lang="zh-CN" style="position: fixed; width: 100%; overflow: hidden; ">
@@ -9,9 +24,10 @@
 	<meta name="description" content="AKOJ程序设计在线评测平台，由北京航空航天大学AK宝典制作小组倾情奉献">
 	<meta name="author" content="北航AK宝典制作小组">
     <title><%= title %> - AKOJ代码测试</title>
-<!--    <link href="<%- lib('semantic-ui/2.4.1/semantic.min.css') %>" rel="stylesheet"> -->
 	<link rel="icon" type="image/png" href="/favicon.png">
-	<link href="https://fomantic-ui.com/dist/semantic.min.css?v=2.9.0" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.3/jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.2/dist/semantic.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.2/dist/semantic.min.css">
 	<link href="<%- selfLib('tomorrow.css') %>" rel="stylesheet">
 	<link href="<%- selfLib('syntect-tomorrow.css') %>?20220512" rel="stylesheet">
     <link href="<%- selfLib('style.css') %>?20181212" rel="stylesheet">
@@ -40,7 +56,7 @@
     <script data-cfasync="false" src="<%- lib('jquery/3.3.1/jquery.min.js') %>"></script>
 
     <style>
-			@media screen and (max-width: 600px) {
+			@media screen and (min-width: 600px) {
 				.ui.fixed.borderless.inverted.menu.stackable a:not(:nth-child(-n+2)) {display: block;}
 			}
 

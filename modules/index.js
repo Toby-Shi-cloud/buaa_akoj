@@ -57,7 +57,7 @@ app.get('/legacy', async (req, res) => { // Original index page of SYZOJ
   }
 });
 
-app.get('/dev', async (req, res) => {
+app.get('/', async (req, res) => {
   try {
     
     // Query recent notices

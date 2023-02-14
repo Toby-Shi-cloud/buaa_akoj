@@ -1,4 +1,7 @@
 <% this.title = contest.title + ' - 比赛' %>
+<% 
+color_list = ['red','blue', 'purple', 'orange', 'yellow', 'pink', 'green', 'olive', 'teal', 'violet'];
+%>
 <style>
 .ui.label.pointing.below.left::before { left: 12%; }
 .ui.label.pointing.below.right::before { left: 88%; }
@@ -45,6 +48,7 @@
           <a class="ui small positive button" href="<%= submissionsUrl %>">提交记录</a>
           <% if (isSupervisior) { %>
             <a class="ui small button" href="<%= syzoj.utils.makeUrl(['contest', contest.id, 'edit']) %>">编辑比赛</a>
+            <a class="ui small button" href="<%= syzoj.utils.makeUrl(['contest', contest.id, 'notice', 'send']) %>">发布比赛通告（实时）</a>
           <% } %>
         </div>
       </div>
@@ -64,7 +68,7 @@
       <h4 class="ui top attached block header">命题组</h4>
       <div class="ui bottom attached segment font-content">
         <% for (let contr_user of contr) { %>
-          <%- contr_user %> 
+          <a class="ui basic <%- color_list[Math.floor(Math.random()*color_list.length)]; %> label"><%- contr_user %></a>
         <% } %>
       </div>
     </div>

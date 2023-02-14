@@ -1,5 +1,7 @@
 let User = syzoj.model('user');
 let Problem = syzoj.model('problem');
+let Contest = syzoj.model('contest');
+let ContestNotice = syzoj.model('contest_notice');
 let File = syzoj.model('file');
 const Email = require('../libs/email');
 const jwt = require('jsonwebtoken');
@@ -278,5 +280,33 @@ app.get('/static/uploads/answer/:md5', async (req, res) => {
     res.sendFile(File.resolvePath('answer', req.params.md5));
   } catch (e) {
     res.status(500).send(e);
+  }
+});
+
+app.get('/api/notice/:id', async (req, res) => {
+  try {
+    let notices = await ContestNotice.queryRange([1, 5], { contest_id: req.params.id }, {
+      time: 'DESC'
+    });
+    let notice = notices[0];
+    let md_content = await syzoj.utils.markdown(notice.content);
+    if (notice) {
+      res.send({
+        notice_id: notice.id,
+        notice_time: notice.time,
+        notice_title: notice.title,
+        notice_content: md_content
+      });
+    } else {
+      res.status(404).send({
+        notice_id: null,
+        notice_time: null,
+        notice_title: null,
+        notice_content: null
+      })
+    }
+  } catch (e) {
+    syzoj.log(e);
+    res.send(e);
   }
 });
