@@ -115,7 +115,7 @@
   "judge_token": "@JUDGE_TOKEN@",
   "email_jwt_secret": "@EMAIL_JWT_SECRET@",
   "google_analytics": "UA-XXXXXXXX-X",
-  "gravatar_url": "https://gravatar.loli.net/avatar",
+  "gravatar_url": "https://sdn.geekzu.org/avatar",
   "cdnjs_url": "built-in",
   "self_cdn_url": "built-in",
   "google_fonts": {

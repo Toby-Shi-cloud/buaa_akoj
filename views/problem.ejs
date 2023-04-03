@@ -60,10 +60,7 @@ if (contest) {
         <div class="row">
           <h1 class="ui center aligned header">
           <% if (contest) { %>
-            <% for (let problem of problems) %>
-            <%- problem.status %> 
-            <% } %>
-            <div class="ui pagination menu" style="box-shadow: none; ">
+						<div class="ui pagination menu" style="box-shadow: none; ">
                 <% let i = 0; for (let problem of problems) { i++; %>
                 <%  let st = ""; if (problem.judge_id) {
                     if (typeof problem.status === 'string') {
@@ -140,8 +137,9 @@ if (contest) {
                   <a class="small ui teal button" href="<%= syzoj.utils.makeUrl(['contest', contest.id, pid, 'download', 'additional_file']) %>">附加文件</a>
                 <% } %>
                 <a href="<%= syzoj.utils.makeUrl(['contest', contest.id]) %>" class="ui orange button">返回比赛</a>
+              
                 <a href="javascript:get_contest_notice(true)" class="ui yellow button">刷新通告</a>
-              <% } else { %>
+							<% } else { %>
                 <% if (testcases && !testcases.error) { %>
                   <a class="small ui primary button" href="#submit_code">提交</a>
                 <% } %>
