@@ -2,11 +2,11 @@
 
 中文 | [English](README.en.md)
 
-# AKOJ - 代码在线评测网站
+# [AKOJ](http://akoj.online) - 代码在线评测网站
 
-基于开源项目SYZOJ，由AK宝典制作小组二次开发。
+基于开源项目SYZOJ，由 AK 宝典制作小组二次开发。
 
-SYZOJ项目继承自 [@louchenyao](https://github.com/louchenyao) 的 [SYZOJ](https://github.com/Zhengzhou-11-Highschool/syzoj)，目前由 [LibreOJ](https://loj.ac) 维护。
+SYZOJ 项目继承自 [@louchenyao](https://github.com/louchenyao) 的 [SYZOJ](https://github.com/Zhengzhou-11-Highschool/syzoj)，目前由 [LibreOJ](https://loj.ac) 维护。
 
 # 部署
 见原项目 Wiki 中的 [部署指南](https://github.com/syzoj/syzoj/wiki/%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97)。
